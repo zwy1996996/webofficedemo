@@ -19,10 +19,11 @@ public class OauthController  {
     private static Map<String, String> fileTypeMap = new HashMap<String, String>();
     //// TODO: 参数传递最好不要出现中文等特殊字符，容易导致签名不过等问题，本例子用fileid与文件名做了一个映射，实际开发可以按情况处理
     static {
+        //匹配文件类型的,w.s.p.f分别代表不同类型的文件后缀
         fileTypeMap.put("1", "w");
         fileTypeMap.put("2", "s");
         fileTypeMap.put("3", "p");
-        fileTypeMap.put("4", "f");
+        fileTypeMap.put("4", "w");
     }
 
     @RequestMapping(value="/weboffice/url", method = RequestMethod.GET)

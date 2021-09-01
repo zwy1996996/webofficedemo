@@ -22,9 +22,11 @@ public class WebOfficeController {
     private static Map<String, String> fileNameMap = new HashMap<String, String>();
 
     static {
-        fileNameMap.put("1", "中文.doc");
-        fileNameMap.put("2", "2.xls");
-        fileNameMap.put("3", "3.ppt");
+        //映射的文件地址,我这里写的是本地E盘下的地址
+        fileNameMap.put("1", "E:\\zwy\\中文.doc");
+        fileNameMap.put("2", "E:\\zwy\\2.xls");
+        fileNameMap.put("3", "E:\\zwy\\3.ppt");
+        fileNameMap.put("4", "E:\\zwy\\test.doc");
     }
 
     @RequestMapping(value="/v1/3rd/file/info", method = RequestMethod.GET)
@@ -47,7 +49,7 @@ public class WebOfficeController {
             file.put("creator", fileModel.creator);
             file.put("modifier", fileModel.modifier);
             //// TODO: 下载链接中的参数如带中文等特殊字符，参数必须进行urlencode
-            file.put("download_url", fileModel.download_url + 3);
+            file.put("download_url", FileModel.download_url + fileid);
             jsonObject.put("file", file);
             UserModel userModel = new UserModel();
             user.put("id", userModel.id);
