@@ -54,7 +54,7 @@ public class WebOfficeController {
             UserModel userModel = new UserModel();
             user.put("id", userModel.id);
             user.put("name", userModel.name);
-            user.put("permission", "write");
+            user.put("permission", userModel.permission);
             user.put("avatar_url", userModel.avatar_url);
             jsonObject.put("user", user);
         } catch (JSONException e) {
