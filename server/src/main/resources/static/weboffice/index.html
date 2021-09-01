@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<body >
+        <h>在线编辑: </h>
+        <h>注意：正式项目中，尽量不要直接用文件名作为重要参数，因为字符编码等问题，容易导致签名不过等问题，建议用fileid等做为唯一标识。（可以参考go-demo）</h>
+        <blockquote>
+        <input type="button" value="中文.doc"  onclick="openFile('1')"/>
+        <input type="button" value="2.xls"  onclick="openFile('2')"/>
+        <input type="button" value="3.ppt"  onclick="openFile('3')"/>
+        </blockquote>
+</body>
+<script src = "https://qn.cache.wpscdn.cn/js/jquery-1.9.1.min.js"> </script>
+<script src="./jwps.js"> </script>
+<script >
+    function openFile(filename)
+    {
+        $.get("/weboffice/url?_w_fileid=" + filename , function(result) {
+            console.log(result);
+			wps = WPS.config({wpsUrl: result.wpsUrl});
+			wps.setToken({token: result.token});    
+        })
+    }
+</script>
+<style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      /* 防止双击缩放 */
+      touch-action: manipulation;
+    }
+
+    iframe {
+      flex: 1;
+    }
+  </style>
+</html> 

@@ -1,0 +1,78 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.2.RELEASE'
+	}
+	repositories {
+//		mavenCentral()
+		mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'WebofficeDemo'
+	manifest {
+        attributes 'Main-Class': 'cn.wps.Application'
+    }
+//    version =  '1.0'
+}
+
+springBoot {
+  mainClass = 'cn.wps.Application'
+}
+
+
+//version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.7
+
+repositories {
+//	mavenCentral()
+	mavenLocal()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    jcenter()
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile fileTree(dir: '../libs', include: ['*.jar'])
+	compile 'com.squareup.okhttp3:okhttp:3.11.0'
+}
+
+task deployProject() {
+    doLast {
+        println('clear WebofficeDemo')
+        delete '../../../deploy/libs/WebofficeDemo.jar', '../../../deploy/bin/WebofficeDemo.sh'
+
+        println("copy WebofficeDemo.jar to deploy")
+        copy {
+            from 'build/libs/WebofficeDemo.jar'
+            into '../../../deploy/libs'
+        }
+
+        println("copy WebofficeDemo.sh to bin")
+        copy {
+            from 'bin'
+            into '../../../deploy/bin'
+        }
+		
+		copy {
+            from '../1.doc'
+            into '../../../deploy/libs'
+        }		
+		
+
+        println("copy app-center to opt")
+        copy {
+            from '../../../app-center'
+            into '/opt/app-center'
+        }
+    }
+}
