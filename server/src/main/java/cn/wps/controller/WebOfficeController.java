@@ -5,14 +5,10 @@ import cn.wps.model.UserModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +19,7 @@ public class WebOfficeController {
 
     static {
         //映射的文件地址,我这里写的是本地E盘下的地址
-        fileNameMap.put("1", "E:\\zwy\\中文.doc");
+        fileNameMap.put("1", "中文.docx");
         fileNameMap.put("2", "E:\\zwy\\2.xls");
         fileNameMap.put("3", "E:\\zwy\\3.ppt");
         fileNameMap.put("4", "E:\\zwy\\test.doc");
@@ -49,7 +45,11 @@ public class WebOfficeController {
             file.put("creator", fileModel.creator);
             file.put("modifier", fileModel.modifier);
             //// TODO: 下载链接中的参数如带中文等特殊字符，参数必须进行urlencode
-            file.put("download_url", FileModel.download_url + fileid);
+            //file.put("download_url", FileModel.download_url + fileid);
+            //从第三方获取文件,把文件的url给放到下面就可以了,就是服务器上文件的地址
+            String url = "http://111.1.1.1:8888/uploadPath/test.docx";
+            file.put("download_url", url);
+
             jsonObject.put("file", file);
             UserModel userModel = new UserModel();
             user.put("id", userModel.id);
@@ -145,7 +145,7 @@ public class WebOfficeController {
         filemodel.version = filemodel.version + 1;
         return filemodel;
     }
-
+/*
     @GetMapping("/weboffice/getFile")
     public ResponseEntity<byte[]> getFile(@RequestParam("_w_fileid") String fileid) throws Exception {
         //// TODO: 处理文件下载，返回对应的文件，如果是接第三方存储，可以没有这个接口
@@ -157,4 +157,6 @@ public class WebOfficeController {
         inputStream.read(body);
         return new ResponseEntity(body, headers, HttpStatus.OK);
     }
+
+ */
 }

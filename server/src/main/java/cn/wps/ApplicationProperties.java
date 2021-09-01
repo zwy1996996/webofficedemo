@@ -1,6 +1,5 @@
 package cn.wps;
 
-import cn.wps.model.FileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -22,9 +21,13 @@ public class ApplicationProperties implements CommandLineRunner {
         ApplicationProperties.appid = appid;
         ApplicationProperties.appSecret = appSecret;
         ApplicationProperties.domain = domain;
+/*
         //// TODO: 下载链接按实际情况增改参数
-        if (download_host != null)
+        if (download_host != null){
             FileModel.download_url = download_host + "/weboffice/getFile?_w_fileid=";
+        }
+*/
+
     }
 
     @Override
