@@ -6,4 +6,6 @@ package cn.wps.model;
 public class UrlModel {
     public String wpsUrl;
     public String token;
+    public String success;
+    public String msg;
 }

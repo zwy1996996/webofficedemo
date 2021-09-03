@@ -17,27 +17,22 @@ public class WebOfficeController {
     //// TODO: 参数传递最好不要出现中文等特殊字符，容易导致签名不过等问题，本例子用fileid与文件名做了一个映射，实际开发可以按情况处理
     private static Map<String, String> fileNameMap = new HashMap<String, String>();
 
-    static {
-        //映射的文件地址,我这里写的是本地E盘下的地址
-        fileNameMap.put("1", "中文.docx");
-        fileNameMap.put("2", "E:\\zwy\\2.xls");
-        fileNameMap.put("3", "E:\\zwy\\3.ppt");
-        fileNameMap.put("4", "E:\\zwy\\test.doc");
-    }
 
     @RequestMapping(value="/v1/3rd/file/info", method = RequestMethod.GET)
+    //跨域
+    @CrossOrigin
     @ResponseBody
-    public Object fileInfo(@RequestParam("_w_fileid") String fileid) throws UnsupportedEncodingException {
+    public Object fileInfo(@RequestParam("_w_fileName") String fileName,@RequestParam("_w_downUrl") String downUrl,@RequestParam("_w_fileId") String fileId) throws UnsupportedEncodingException {
         JSONObject jsonObject = new JSONObject();
         JSONObject file = new JSONObject();
         JSONObject user = new JSONObject();
         try {
             FileModel fileModel = new FileModel();
-            File localFile = new File(fileNameMap.get(fileid));
+            File localFile = new File(fileName);
             fileModel.size = localFile.length();
             //// TODO: 文件的id应该唯一
-            file.put("id", fileid);
-            file.put("name", fileNameMap.get(fileid));
+            file.put("id", fileId);
+            file.put("name", fileName);
             //// TODO: 文件的版本控制
             file.put("version", fileModel.version);
             //// TODO: 必须返回文件真实大小，服务端会检查
@@ -45,15 +40,14 @@ public class WebOfficeController {
             file.put("creator", fileModel.creator);
             file.put("modifier", fileModel.modifier);
             //// TODO: 下载链接中的参数如带中文等特殊字符，参数必须进行urlencode
-            //file.put("download_url", FileModel.download_url + fileid);
             //从第三方获取文件,把文件的url给放到下面就可以了,就是服务器上文件的地址
-            String url = "http://111.1.1.1:8888/uploadPath/test.docx";
-            file.put("download_url", url);
+            file.put("download_url", downUrl);
 
             jsonObject.put("file", file);
             UserModel userModel = new UserModel();
             user.put("id", userModel.id);
             user.put("name", userModel.name);
+            //设置只读或编辑
             user.put("permission", userModel.permission);
             user.put("avatar_url", userModel.avatar_url);
             jsonObject.put("user", user);
@@ -83,7 +77,7 @@ public class WebOfficeController {
             file.put("creator", fileModel.creator);
             file.put("modifier", fileModel.modifier);
             //// TODO: 下载链接中的参数如带中文等特殊字符，参数必须进行urlencode
-            file.put("download_url", fileModel.download_url + fileid);
+            file.put("download_url", FileModel.download_url + fileid);
             jsonObject.put("file", file);
             UserModel userModel = new UserModel();
             user.put("id", userModel.id);

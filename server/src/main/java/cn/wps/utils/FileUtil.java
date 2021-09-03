@@ -55,6 +55,20 @@ public class FileUtil {
         return false;
     }
 
+    //根据url判断文件传输类型,错误返回0
+    public static String getFileTypeByFileName(String url){
+        String[] arr = url.split("\\.");
+        if (arr.length >1){
+            String fileType = arr[arr.length - 1];
+            return fileType;
+        }
+        return "0";
+    }
 
+    //根据url获取文件名
+    public static String getFileName(String url){
+        String fileName = url.substring(url.lastIndexOf("/")+1);
+        return fileName;
+    }
 
 }

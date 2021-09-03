@@ -2,6 +2,7 @@ package cn.wps.controller;
 
 import cn.wps.ApplicationProperties;
 import cn.wps.model.UrlModel;
+import cn.wps.utils.FileUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.Mac;
@@ -16,32 +17,41 @@ import static org.apache.tomcat.util.codec.binary.Base64.encodeBase64String;
 
 @RestController
 public class OauthController  {
-    private static Map<String, String> fileTypeMap = new HashMap<String, String>();
-    //// TODO: 参数传递最好不要出现中文等特殊字符，容易导致签名不过等问题，本例子用fileid与文件名做了一个映射，实际开发可以按情况处理
-    static {
-        //匹配文件类型的,w.s.p.f分别代表不同类型的文件后缀
-        fileTypeMap.put("1", "w");
-        fileTypeMap.put("2", "s");
-        fileTypeMap.put("3", "p");
-        fileTypeMap.put("4", "w");
-    }
+
+    //后缀名错误
+    private static final String SUFFIX_FALSE = "0";
 
     @RequestMapping(value="/weboffice/url", method = RequestMethod.GET)
+    //跨域
+    @CrossOrigin
     @ResponseBody
-    public Object  getapp_Token(@RequestParam("_w_fileid") String fileid) throws UnsupportedEncodingException {
-        if (fileid == null || fileid.isEmpty()) {
-            return null;
+    public Object getapp_Token(@RequestParam("_w_fileName") String fileName,@RequestParam("_w_downUrl") String downUrl,@RequestParam("_w_fileId") String fileId) throws UnsupportedEncodingException {
+        UrlModel urlModel = new UrlModel();
+        //获取后缀名
+        String fileSuffix = FileUtil.getFileTypeByFileName(fileName);
+        //后缀名校验
+        if (SUFFIX_FALSE.equals(fileSuffix)){
+            urlModel.success = "0";
+            urlModel.msg = "检查后缀名是否存在";
+            return urlModel;
         }
-        String url = ApplicationProperties.domain + "/office/" + fileTypeMap.get(fileid) + "/" + fileid + "?" ;
+        //文件类型是一定需要的FileUtil.getFileTypeCode(fileSuffix)
+        String url = ApplicationProperties.domain + "/office/" + FileUtil.getFileTypeCode(fileSuffix) + "/xxxx?" ;
         //// TODO: 注意：签名前，参数不要urlencode,要签名以后统一处理url编码，防止签名不过，带中文等字符容易导致签名不过，要注意签名与编成的顺序，最好不要带中文等特殊字符
         Map paramMap= new HashMap<String, String>();
         paramMap.put("_w_appid", ApplicationProperties.appid);
-        paramMap.put("_w_fileid", fileid);
+        paramMap.put("_w_downUrl",downUrl);
+        paramMap.put("_w_fileName",fileName);
+        paramMap.put("_w_fileId",fileId);
+
         String signature = getSignature(paramMap, ApplicationProperties.appSecret);
         url += getUrlParam(paramMap) + "&_w_signature=" + signature;
-        UrlModel urlModel = new UrlModel();
+
+        //url就是在线文档的地址,可以直接打开这个url查看
         urlModel.wpsUrl = url;
-        urlModel.token = "1";
+        urlModel.token = "xxxx";
+        urlModel.success = "1";
+        urlModel.msg = "成功";
         return  urlModel;
     }
 
@@ -62,8 +72,9 @@ public class OauthController  {
             keys.add(entry.getKey());
         }
 
-         // 将所有参数按key的升序排序
+        // 将所有参数按key的升序排序
         Collections.sort(keys, new Comparator<String>() {
+            @Override
             public int compare(String o1, String o2) {
                 return o1.compareTo(o2);
             }
